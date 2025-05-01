@@ -7,6 +7,9 @@ if (!isset($connection) || !$connection instanceof mysqli) {
 }
 session_start();
 
+// Debug information
+echo "Session user_id: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not set') . "<br>";
+
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../register/signIn.php");
@@ -14,6 +17,17 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+
+// Debug cart contents
+$debug_query = "SELECT * FROM cart WHERE user_id = $user_id";
+$debug_result = mysqli_query($connection, $debug_query);
+echo "Number of items in cart: " . mysqli_num_rows($debug_result) . "<br>";
+if ($debug_result) {
+    while ($row = mysqli_fetch_assoc($debug_result)) {
+        echo "Cart item - user_id: {$row['user_id']}, product_id: {$row['product_id']}, quantity: {$row['quantity']}<br>";
+    }
+}
+
 $message = null;
 
 // Gérer les actions du panier
